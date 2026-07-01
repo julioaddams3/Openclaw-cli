@@ -2,6 +2,8 @@
 
 const GitService = require("../git/gitService");
 const OpenClawEngine = require("../core/engine");
+const AutoEngine = require("../core/automation/autoEngine");
+const Watcher = require("../core/automation/watcher");
 
 /**
  * Provider configuration (AI layer)
@@ -25,16 +27,7 @@ function getProviderConfig() {
 }
 
 /**
- * CLI bootstrap
- */
-const git = new GitService();
-const engine = new OpenClawEngine(git, getProviderConfig());
-
-const command = process.argv[2];
-const args = process.argv.slice(3);
-
-/**
- * Safe JSON output
+ * Safe output
  */
 function output(data) {
   console.log(JSON.stringify(data, null, 2));
@@ -52,9 +45,19 @@ function handleError(cmd, error) {
 }
 
 /**
- * Main CLI router
+ * CLI entry
  */
 async function main() {
+  const git = new GitService();
+  const providerConfig = getProviderConfig();
+
+  const engine = new OpenClawEngine(git, providerConfig);
+  const autoEngine = new AutoEngine(providerConfig);
+  const watcher = new Watcher(providerConfig);
+
+  const command = process.argv[2];
+  const args = process.argv.slice(3);
+
   try {
     if (!command) {
       console.log(`
@@ -65,6 +68,8 @@ Usage:
   openclaw diff
   openclaw commit "message"
   openclaw ai "prompt"
+  openclaw auto
+  openclaw watch [interval]
       `);
       return;
     }
@@ -92,6 +97,17 @@ Usage:
         return output(result);
       }
 
+      case "auto": {
+        const result = await autoEngine.run();
+        return output(result);
+      }
+
+      case "watch": {
+        const interval = parseInt(args[0]) || 5000;
+        const result = await watcher.start(interval);
+        return output(result);
+      }
+
       case "help": {
         console.log(`
 OpenClaw CLI v0 Commands:
@@ -100,6 +116,8 @@ OpenClaw CLI v0 Commands:
   diff     → Git diff + AI analysis
   commit   → Create commit (AI-assisted)
   ai       → Direct AI query
+  auto     → Autonomous analysis pipeline
+  watch    → Continuous repository monitoring (CI/CD loop)
         `);
         return;
       }

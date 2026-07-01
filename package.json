@@ -1,0 +1,18 @@
+{
+  "name": "openclaw-cli",
+  "version": "1.0.0",
+  "description": "OpenClaw CLI - Gemini powered terminal AI system",
+  "main": "index.js",
+  "bin": {
+    "openclaw": "./bin/openclaw.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["ai", "cli", "gemini", "openclaw"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1"
+  }
+}

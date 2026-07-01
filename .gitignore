@@ -1,0 +1,34 @@
+# Dependencias
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Entornos
+.env
+.env.local
+.env.production
+
+# OpenClaw runtime
+/var/log/openclaw/
+/opt/openclaw/
+
+# Archivos temporales
+*.tmp
+*.bak
+*.save
+
+# Editor
+.vscode/
+.idea/
+
+# Cache
+.cache/
+dist/
+build/
